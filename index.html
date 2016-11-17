@@ -27,35 +27,48 @@
             display: none;
         }
         
-        #mytable{
+        #mytable {
             position: absolute;
-            left: 760px; 
-            top:  100px;
+            left: 760px;
+            top: 100px;
             font-size: 10px;
             font-family: cursive;
-            padding:0px 10px;
+            padding: 0px 10px;
             border-spacing: 6px, 6px;
-            border: 1px solid #9f9a9a;
-            border-collpase:collpase; 
-            width:700px;
+            width: 700px;
+            border: 1px solid #666;
+            border-collapse: collapse;
+        }
+        th,
+        tr,
+        td {
+            border: 1px solid #666;
         }
         
-        th, tr, td {
-           border: 1px solid #9f9a9a; 
+        tr:nth-child(even) {
+            background: #CCC
         }
         
+        tr:nth-child(odd) {
+            background-color: #FAFAFA;
+        }
+        
+        tr:hover {
+            background-color: #E6FBFF;
+        }
     </style>
 </head>
 
 <body>
-    <div><h1>未完成...待續...</h1></div>
+    <div>
+        <h1></h1></div>
 
     <div id="tooltip" class="hidden">
         <p><strong id="city">Hello</strong></p>
         <p id="Rural">Rural</p>
     </div>
 
-    <svg width="600" height="600"></svg>
+    <svg width="600" height="800"></svg>
     <script>
         //偏鄉學校資料: RuralSchool_2015.json
         d3.csv("RuralSchool_2015.csv", function (DataSet) {
@@ -91,7 +104,7 @@
                     fill: function (d, i) {
                         return fScale(i);
                     }
-                })
+                })         
                 .on("mouseover", function (d) {
                     tempColor = d3.select(this).attr("fill");
                     d3.select(this).attr({
@@ -140,10 +153,8 @@
                         });
 
                         console.log(newDataSet);
-                        var Rural_Table = tabulate(newDataSet, ["City", "Town", "Level",  "Name", "Mark", "Address"])
-                       //var num = document.getElementById("mytable").rows.length;
-                       //document.getElementById("mytable").deleteRow(-1);
-                           
+                        var Rural_Table = tabulate(newDataSet, ["City", "Town", "Level", "Name", "Mark", "Address"])
+
                     });
 
                     tooltip.classed("hidden", false);
@@ -161,7 +172,7 @@
 
         function bind(topoData, DataSet) {
             // 2.地理投影器: 設定投影方式(麥卡托)、定位點([經,緯度])、縮放(scale)
-            var projection = d3.geo.mercator().center([121, 24]).scale(6000);
+            var projection = d3.geo.mercator().center([121, 24]).scale(7000);
 
             // 3.路徑產生器: d3.geo.path()
             var path = d3.geo.path().projection(projection);
@@ -196,19 +207,22 @@
 
         //表格
         function tabulate(DataSet, columns) {
+
+            d3.select("table").remove();
+
             var table = d3.select("body").append("table")
                 .attr("id", "mytable"),
-                thread = table.append("thread"),
+              //  thread = table.append("thread"),
                 tbody = table.append("tbody");
 
-            thread.append("tr")
-                .selectAll("th")
-                .data(columns)
-                .enter()
-                .append("th")
-                .text(function (column) {
-                    return column;
-                });
+//            thread.append("tr")
+//                .selectAll("th")
+//                .data(columns)
+//                .enter()
+//                .append("th")
+//                .text(function (column) {
+//                    return column;
+//                });
 
             var selection_city = d3.select(this);
 
@@ -230,7 +244,7 @@
                 })
                 .enter()
                 .append("td")
-                .attr("style", "font-family: Courier")
+                //.attr("style", "font-family: Courier")
                 .html(function (d) {
                     return d.value;
                 });
